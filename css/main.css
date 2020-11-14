@@ -1,0 +1,25 @@
+* {
+}
+
+body {
+  display: inline-block;
+}
+
+main {
+  width: 100%;
+}
+
+canvas {
+  /* display: block; */
+  margin: auto;
+}
+
+.sliders {
+  display: flex;
+}
+
+.slidecontainer {
+  padding: 10px 15px 10px 10px;
+  margin: 10px 5px 10px 0px; 
+  border: 1px solid black;
+}
