@@ -32,21 +32,16 @@ function setup() {
   timeStarted = millis();
 
   foodList = [];
+  avoidableList = [];
+  preyList = [];
+  predList = [];
+
   for (i = 0; i < 5; i++) {
     createRandomFood();
-  }
-
-  avoidableList = [];
-  for (i = 0; i < 5; i++) {
     createRandomAvoidable();
-  }
-
-  preyList = [];
-  for (i = 0; i < 5; i++) {
     createRandomPrey();
   }
 
-  predList = [];
   for (i = 0; i < 2; i++) {
     createRandomPredator();
   }
@@ -129,17 +124,33 @@ function draw() {
 
   // create new food item every second
   if (millis() - timeOfLastSwitch > foodInterval) {
-    // amount of time that's passed since we last changed colors
-    // is now greater than the switch interval.
-
-    // change the background color
     createRandomFood();
 
     // remember timestamp, to use to determine the next interval
     timeOfLastSwitch = millis();
   }
 
-  // create new food item if prey has "eaten" food
+  // remove food item if prey has "eaten" food
+  removeEatenFood();
+
+  // check if any prey have been eaten
+  removeEatenPrey();
+
+  // update desired path of each prey based on food
+  updatePreyPaths();
+
+  // update desired path of each predator entity based on prey
+  updatePredatorPaths();
+
+  // update everything
+  updateAllEntities();
+
+  // display everything
+  displayAllEntities();
+} // END DRAW
+
+// remove food item if prey has "eaten" food
+function removeEatenFood() {
   for (j = 0; j < foodList.length; j++) {
     if (foodList[j] == null) {
       continue;
@@ -165,8 +176,10 @@ function draw() {
       }
     });
   }
+}
 
-  // check if any prey have been eaten
+// check if any prey have been eaten
+function removeEatenPrey() {
   for (i = 0; i < preyList.length; i++) {
     if (preyList[i] == null) {
       continue;
@@ -192,8 +205,10 @@ function draw() {
       }
     });
   }
+}
 
-  // update desired path of each prey based on food
+// update desired path of each prey based on food
+function updatePreyPaths() {
   preyList.forEach((element) => {
     desiredPath = element.checkForFood(foodList);
     if (desiredPath.equals(createVector(-1, -1, -1))) {
@@ -213,8 +228,10 @@ function draw() {
       element.seek(desiredPath, 1);
     }
   });
+}
 
-  // update desired path of each predator entity and draw
+// update desired path of each predator entity based on prey
+function updatePredatorPaths() {
   predList.forEach((element) => {
     desiredPath = element.checkForPrey(preyList);
     if (desiredPath.equals(createVector(-1, -1, -1))) {
@@ -234,8 +251,10 @@ function draw() {
       element.seek(desiredPath, 1);
     }
   });
+}
 
-  // update everything
+// update all entities
+function updateAllEntities() {
   preyList.forEach((element) => {
     element.update(predList, avoidableList);
   });
@@ -243,13 +262,14 @@ function draw() {
   predList.forEach((element) => {
     element.update(avoidableList);
   });
+}
 
-  // display everything
+// display all entities
+function displayAllEntities() {
   foodList.forEach((element) => {
     element.display();
   });
 
-  // display everything
   avoidableList.forEach((element) => {
     element.display();
   });
@@ -328,21 +348,15 @@ function reload() {
 }
 
 function updateSlider(slider, newVelocity) {
-  newVelocity = (4)*(newVelocity/100);
+  newVelocity = 4 * (newVelocity / 100);
   if (slider == "PreyNormal") {
     preyNormalCount.html(`Prey Normal Velocity: ${newVelocity}`);
   } else if (slider == "PreyEscaping") {
-    preyEscapingCount.html(
-      `Prey Escaping Velocity: ${newVelocity}`
-    );
+    preyEscapingCount.html(`Prey Escaping Velocity: ${newVelocity}`);
   } else if (slider == "PredatorNormal") {
-    predatorNormalCount.html(
-      `Predator Normal Velocity: ${newVelocity}`
-    );
+    predatorNormalCount.html(`Predator Normal Velocity: ${newVelocity}`);
   } else if (slider == "PredatorChasing") {
-    predatorChasingCount.html(
-      `Predator Chasing Velocity: ${newVelocity}`
-    );
+    predatorChasingCount.html(`Predator Chasing Velocity: ${newVelocity}`);
   }
 }
 

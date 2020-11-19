@@ -11,9 +11,13 @@ class Prey {
     this.maxforce = 0.08;
     this.predatorRealizationRadius = 60;
     this.obstacleRealizationRadius = 35;
+    this.reproductionCountdown = 5000;
     this.isPursuingFood = -1;
     this.isEscaping = -1;
     this.isAvoiding = -1;
+
+    this.timeLastReproduced = 0;
+    this.canReproduce = false;
   }
 
   // update location
@@ -26,6 +30,17 @@ class Prey {
 
     if (abs(this.position.z) >= mapWidth / 2) {
       this.position.z = -this.position.z * 0.98;
+    }
+
+    // check if enough time has passed since the entity has reproduced
+    if (millis() - this.timeLastReproduced > this.reproductionCountdown) {
+      // amount of time since the entity has last reproduced is greater
+      // than the entity's reproductive cooldown
+      this.canReproduce == true;
+    }
+
+    if (this.canReproduce) {
+      this.checkForMates(predatorList);
     }
 
     this.checkForPredators(predatorList);

@@ -9,9 +9,13 @@ class Predator {
     this.normalVelocity = s;
     this.chasingVelocity = s * 1.4;
     this.obstacleRealizationRadius = 40;
+    this.reproductionCountdown = 10000;
     this.maxforce = 0.08;
     this.isChasingPrey = -1;
     this.isAvoiding = -1;
+
+    this.timeLastReproduced = 0;
+    this.canReproduce = false;
   }
 
   // update location
@@ -24,6 +28,12 @@ class Predator {
 
     if (abs(this.position.z) >= mapWidth / 2) {
       this.position.z = -this.position.z * .98;
+    }
+
+    // check if enough time has passed since the entity has reproduced
+    if (millis() - this.timeLastReproduced > this.reproductionCountdown) {
+      // amount of time since the entity has last reproduced is greater  
+      // than the entity's reproductive cooldown
     }
 
     this.checkForAvoidables(avoidablesList);
