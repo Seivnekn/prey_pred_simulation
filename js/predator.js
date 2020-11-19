@@ -23,17 +23,22 @@ class Predator {
     // boundaries behavior (wraparound)
     // make sure entity hasn't hit a wall
     if (abs(this.position.x) >= mapWidth / 2) {
-      this.position.x = -this.position.x * .98;
+      this.position.x = -this.position.x * 0.98;
     }
 
     if (abs(this.position.z) >= mapWidth / 2) {
-      this.position.z = -this.position.z * .98;
+      this.position.z = -this.position.z * 0.98;
     }
 
     // check if enough time has passed since the entity has reproduced
     if (millis() - this.timeLastReproduced > this.reproductionCountdown) {
-      // amount of time since the entity has last reproduced is greater  
+      // amount of time since the entity has last reproduced is greater
       // than the entity's reproductive cooldown
+      this.canReproduce == true;
+    }
+
+    if (this.canReproduce) {
+      this.checkForMates(predatorList);
     }
 
     this.checkForAvoidables(avoidablesList);
@@ -145,7 +150,7 @@ class Predator {
             this.position.x,
             this.position.z
           )
-        ) < this.obstacleRealizationRadius // prey vision distance
+        ) < this.obstacleRealizationRadius // predator vision distance
       ) {
         this.isAvoiding = 1;
         // vector pointing away from predator
